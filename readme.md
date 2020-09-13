@@ -21,7 +21,9 @@
 #### Директории:
 
 `./desktop` содержит:
- - `check.py` - анализ интернет соединения, текущих процессов, событий мышы, соединений bluetooth
+ - `blut.py` - анализ соединений bluetooth
+ - `check.py` - анализ интернет соединения и текущих процессов
+ - `tk.py` - анализ событий мышы
 
 
  `./server` содержит:
@@ -69,8 +71,6 @@ setupvars.bat
 cd ./your_dir_project/MirITeam_leadersofdigital2020
 python manage.py runserver
 ```
-
-
 
 
 &nbsp;

@@ -21,9 +21,11 @@ class blut(object):
         for i in range(len(d)):
             #print(d[i][1])
             if d[i][1] in self.name:
-                print('bluetuse устройство: ' + str(d[i][1]))
-                return [1,'bluetuse detection: ',d[i][1]]
-        return [0,'bluetuse detection: ']
+                print('bluetuse устройство:' + str(d[i][1]))
+                message('bluetuse detection:'+str(d[i][1]))
+                time.sleep(5)
+                return [1,'bluetuse detection:',d[i][1]]
+        return [0,'bluetuse detection:']
     
 class internet(object):
     def __init__(self):
@@ -60,7 +62,7 @@ class program(object):
        for i in range(len(self.proc_name)):
           self.prog[self.proc_name[i]]=0
     def check(self):
-        mas = [0, 'start program: ']
+        mas = [0, 'start program:']
         for proc in psutil.process_iter():
            for i in self.proc_name:
               if proc.name() == i:
@@ -72,7 +74,16 @@ class program(object):
                 print ("Process {}  started".format(i))
                 mas.append(i)
                 mas[0]=1
-        return mas
+        if mas[0] == 1:
+            send =''
+            send='start program:'
+            mas.remove(mas[0])
+            mas.remove(mas[0])
+            for i in range(len(mas)):
+                send=send+'+'+ str(mas[i])
+        message(send)
+        time.sleep(5)
+        return [0]
     
             
 class kontroler(object):
@@ -94,6 +105,7 @@ class kontroler(object):
 def message(send):
     try:
      re.get('http://127.0.0.1:8000/mes/'+str(send))  
+     print(send)
     except:
         print('ошибка отправки')
 class main(object):
@@ -102,25 +114,27 @@ class main(object):
     self.k = kontroler()
    def start(self):
          while onexam():
-              send =''
+              #send =''
               rez= self.k.start()
-              for i in rez:
+              '''for i in rez:
                   if i[0]:
-                    send=send + ' ' + str(i[1]) + str(i[2])
+                      send=send + ' ' + str(i[1]) + str(i[2])
+                      i.remove(i[0])
+                      i.remove(i[0])
+                      i.remove(i[0])
+                      for j in range(len(i)):
+                          send=send + ' ' + str(i[j])
               if send:
                   message(send)
-              time.sleep(10)
-   def mouse(self):
-       m = mouse.Listener(on_click=on_click,on_scroll=on_scroll)
-       m.start()
-       m.join()
+              time.sleep(10)'''
+  
    def run(self):
-        #t1 = threading.Thread(target=self.start())
-        t2 = threading.Thread(target=self.mouse())
-        #t1.start()
-        t2.sart()
-        #t1.join()
-        t2.join()
+        t1 = threading.Thread(target=self.start())
+        #t2 = threading.Thread(target=self.mouse())
+        t1.start()
+        #t2.sart()
+        t1.join()
+        #t2.join()
 
         
 def onexam():

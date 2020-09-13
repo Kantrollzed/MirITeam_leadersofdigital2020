@@ -7,6 +7,7 @@ from numpy import linalg as LA
 import cv2
 from scipy.spatial import distance
 from openvino.inference_engine import IECore, IENetwork
+
 def message(send):
     try:
      re.get('http://127.0.0.1:8000/mes/'+str(send))  
@@ -14,15 +15,21 @@ def message(send):
     except:
         print('ошибка отправки')
 def vzglag(mas):
+    global gl
+    global glaza
     ygl = int(sum(mas)/len(mas))
     if ygl > 0 and ygl <91:
-        message('right down')
+        message('eye:right down')
+       
     elif ygl > 90 and ygl <181:
-         message('left down')
+         message('eye:left down')
+        
     elif ygl <0 and ygl > -91:
-         message('right up')
+         message('eye:right up')
+        
     else:
-        message('left up')
+        message('eye:left up')
+       
 class ImageOpenVINOPreprocessing():
     def __init__(self):
         self.model_det  = 'face-detection-adas-0001'
@@ -252,14 +259,15 @@ class ImageOpenVINOPreprocessing():
             #if gaze_line[2]==True:
             #self.draw_spark(out_img, (gaze_line[1][0], gaze_line[1][1]))
         try:
-            self.rez_eyes.append(sum(eyes)/len(eyes))
-            if len(self.rez_eyes) > 10:
-                self.rez_eyes.remove(self.rez_eyes[0])
-            if self.frame_num % 45 == 0:
-                vzglag(self.rez_eyes)
-
+         self.rez_eyes.append(sum(eyes)/len(eyes))
+        
+         if len(self.rez_eyes) > 10:
+            self.rez_eyes.remove(self.rez_eyes[0])
+         if self.frame_num % 40 == 0:
+            vzglag(self.rez_eyes)
         except:
-            print("eyes does not found")
+            print('nan')
+            
         
         return out_img
 

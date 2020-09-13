@@ -12,7 +12,13 @@ ImgProcess = ImageOpenVINOPreprocessing()
 '''eyeris_detector = EyerisDetector(image_source=ImageSource(), classifier=CascadeClassifier(),
                                  tracker=LucasKanadeTracker())'''
 
-text = '1111'
+text = ''
+blut = ''
+click = 0
+programs = ''
+glaza = 0
+rez ='good stydent'
+gl = ''
 class VideoCamera(object):
 
     def __init__(self, path):
@@ -63,18 +69,57 @@ def indexscreen(request):
 
 def changeline(request):
     global text
+    global blut 
+    global click 
+    global programs 
+    global glaza 
+    global rez 
+    global gl
     print('-------------------------------------------')
     #print(request)
-    line = str(request).split('/')
-    mes = line[2].replace('%20',' ')
-    print(mes)
+    rec = str(request).split('/')
+    mes = rec[2].replace('%20',' ')
+    rec = mes
     text = mes
+    if 'press' in rec:
+        click = click+1
+    elif 'start program:' in rec:
+        prog = rec.split(':')
+        prog=prog[1]
+        programs=prog
+    elif 'bluetuse detection:' in rec:
+        prog = rec.split(':')
+        prog=prog[1]
+        blut=prog
+    elif 'eye:' in rec:
+        r = rec.split(':')
+        rr =r[1]
+        if gl!=rr:
+         glaza=glaza+1
+        
+        gl = rr
+        
+    else:
+        print('not info')
+    if glaza > 5:
+        rez='bad student'
+    print(glaza)
     print('-------------------------------------------')
     
 def getline(request):
     global text
+    global blut 
+    global click 
+    global programs 
+    global glaza 
+    global rez 
     response_data = {}
     response_data['text'] = text
+    response_data['blut'] = blut
+    response_data['click'] = click
+    response_data['programs'] = programs
+    response_data['glaza'] = glaza
+    response_data['rez'] = rez
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 @gzip.gzip_page
 def dynamic_stream(request, num=0,stream_path="0"):

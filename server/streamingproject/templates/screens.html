@@ -78,6 +78,8 @@
             margin-top:10px;
             background: linear-gradient(0deg, #A8ABFF, #A8ABFF), #A09F9F;
         }
+
+
     </style>
 
 </head>
@@ -86,12 +88,17 @@
    function get() {
 
         $.get("/info",{}, function (data, status){ 
-		console.log(data.text)
+		console.log(data)
         document.getElementById("p1").innerHTML = data.text;
+		document.getElementById("p12").innerHTML = data.blut;
+		document.getElementById("p13").innerHTML = data.click;
+		document.getElementById("p14").innerHTML = data.programs;
+		document.getElementById("p15").innerHTML = data.glaza;
+		document.getElementById("p16").innerHTML = data.rez;
         });
         
     }
-   let timerId = setInterval(get, 10000);
+   let timerId = setInterval(get, 2000);
    
 </script>
 
@@ -113,7 +120,23 @@
                     <img src="{% url 'dynamic_stream' num=1 stream_path='0' %}" style="border: 1px slategray solid" width="844px" height="500px">
                 </div>
                 <div class='text'>
+                    <p>Statistic:</p>
                     <p id='p1'> экзамен </p>
+					<hr/>
+                    <p>Bluetooth:</p>
+					<p id='p12'> 0 </p>
+					<hr/>
+                    <p>Mouse click:</p>
+					<p id='p13'> 0 </p>
+					<hr/>
+                    <p>Programs:</p>
+					<p id='p14'> 0 </p>
+					<hr/>
+                    <p>Eyes movement:</p>
+					<p id='p15'> 0 </p>
+					<hr/>
+                    <p>Result:</p>
+					<p id='p16'> сдает сам </p>
                 </div>
                 <button>Завершить</button>
             </div>
