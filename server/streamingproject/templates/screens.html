@@ -4,17 +4,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
     <title>Screens</title>
+    <style>
+        *{
+            margin:0 auto;
+            padding:0;
+        }
+        .header{
+            position: center;
+            width: 1418px;
+            height: 104px;
+            left: 11px;
+            top: 28px;
+            margin-top: 28px;
+            margin-left:11px;
+            background: rgba(196, 196, 196, 0.46);
+        }
+        .row_1{
+
+            position: absolute;
+            width: 168px;
+            height: 600px;
+            left: 11px;
+            top: 144px;
+            margin-bottom: 10px;
+            background: rgba(196, 196, 196, 0.46);
+        }
+
+
+        .row_2{
+
+            position: absolute;
+            width: 1228px;
+            height: 600px;
+            left: 201px;
+            top: 144px;
+            margin-bottom: 10px;
+            background: rgba(196, 196, 196, 0.46);
+        }
+
+        .box{
+            position: absolute;
+            width: 844px;
+            height: 500px;
+            margin-bottom: 105px;
+            margin-top: 42px;
+            margin-left: 42px;
+            margin-right: 342px;
+            background: linear-gradient(0deg, #F5F5F5, #F5F5F5), #A09F9F;
+        }
+
+        .text{
+            position: absolute;
+            width: 293px;
+            height: 400px;
+            margin-top: 42px;
+            margin-right: 27px;
+            margin-bottom: 19px;
+            margin-left: 22px;
+
+            left: 900px;
+            background: linear-gradient(0deg, #F5F5F5, #F5F5F5), #A09F9F;
+        }
+        button{
+            position: absolute;
+            width: 293px;
+            height: 81px;
+            left: 900px;
+            top: 450px;
+            margin-left: 22px;
+            margin-right: 27px;
+            margin-top:10px;
+            background: linear-gradient(0deg, #A8ABFF, #A8ABFF), #A09F9F;
+        }
+    </style>
+
 </head>
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script>
+   function get() {
+
+        $.get("/info",{}, function (data, status){ 
+		console.log(data.text)
+        document.getElementById("p1").innerHTML = data.text;
+        });
+        
+    }
+   let timerId = setInterval(get, 10000);
+   
+</script>
+
 <body>
-    <div class="main-container">
-        <div class="container">
-            <h1>Eyes detection:</h1>
-            <img class="" src="{% url 'dynamic_stream' num=1 stream_path='0' %}" style="border: 1px slategray solid">
-            <br><br><br>
-        </div>
+    <div class="header">
+        <img  src='https://sun9-38.userapi.com/svJFjz6Pe3ekxchP-m8m12WkkfMIe85VEyxxnw/4saQ8gPRvzg.jpg' style='margin-top: 12px;
+        margin-left: 15px;
+        margin-bottom: 15px;'>
+        <img src='https://sun9-73.userapi.com/RsTAubsJt2Kw_uIFlNrEJVFnXG31mAVU8RrNVQ/QXT-E2rW5fI.jpg' style='float:right; margin-top: 11px; margin-bottom: 10px; margin-right: 15px;'>
     </div>
+        <div class='container'> 
+            <div class='row_1'>
+                    <img src='https://sun9-55.userapi.com/9oo_yd6FcV0ci-TCBgXBKbxVbtXIgeNsUq842g/aLq51tVM690.jpg' style='margin-top:25px; margin-left:15px;margin-right: 14px;'>
+                    <img src='https://sun9-43.userapi.com/RGK4O2t7PNDJryGofXgW08O--NeFgZ9EZI8s4g/bperf-kyF80.jpg' style='margin-top:25px; margin-left:15px;margin-right: 14px;'>
+                    <img src='https://sun9-67.userapi.com/nsKa0TpTkJk4V3PVrWiYL_S4IwRD6jUif0_VqQ/veiH6L3tm-o.jpg' style='margin-top:25px; margin-left:15px;margin-right: 14px;'>
+            </div>
+            <div class='row_2'>
+                <div class='box'>
+                    <img src="{% url 'dynamic_stream' num=1 stream_path='0' %}" style="border: 1px slategray solid" width="844px" height="500px">
+                </div>
+                <div class='text'>
+                    <p id='p1'> экзамен </p>
+                </div>
+                <button>Завершить</button>
+            </div>
+        </div>
+        
+        
+    
 </body>
 </html>

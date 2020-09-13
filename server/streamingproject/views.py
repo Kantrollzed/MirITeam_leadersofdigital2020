@@ -1,18 +1,21 @@
 from django.shortcuts import render
-from django.http import StreamingHttpResponse, HttpResponseServerError
-
+from django.http import StreamingHttpResponse, HttpResponseServerError , HttpResponse
+from django.core import serializers
 from django.views.decorators import gzip
 import cv2
 import os
 import sys
+import json
 from videoProccesing.openvino_processing import ImageOpenVINOPreprocessing
+#from videoProccesing.eye import *
+ImgProcess = ImageOpenVINOPreprocessing()
+'''eyeris_detector = EyerisDetector(image_source=ImageSource(), classifier=CascadeClassifier(),
+                                 tracker=LucasKanadeTracker())'''
 
-
+text = '1111'
 class VideoCamera(object):
 
     def __init__(self, path):
-        self.ImgProcess = ImageOpenVINOPreprocessing()
-
         self.video = cv2.VideoCapture(0)
         self.score = 0
 
@@ -35,7 +38,8 @@ class VideoCamera(object):
     def get_frame(self):
         ret, frame = self.video.read()
         if ret:
-            frame = self.ImgProcess.main(frame)
+            frame = ImgProcess.main(frame)
+            #frame = eyeris_detector.run(frame)
             jpeg = cv2.imencode('.jpg', frame)[1].tostring()
             return jpeg
 
@@ -49,14 +53,32 @@ def gen(camera):
 
 
 def indexscreen(request):
+    global text
     try:
         template = "screens.html"
+        
         return render(request,template)
     except HttpResponseServerError:
         print("aborted")
 
+def changeline(request):
+    global text
+    print('-------------------------------------------')
+    #print(request)
+    line = str(request).split('/')
+    mes = line[2].replace('%20',' ')
+    print(mes)
+    text = mes
+    print('-------------------------------------------')
+    
+def getline(request):
+    global text
+    response_data = {}
+    response_data['text'] = text
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 @gzip.gzip_page
 def dynamic_stream(request, num=0,stream_path="0"):
+   
     try:
         return StreamingHttpResponse(gen(VideoCamera(stream_path)), content_type="multipart/x-mixed-replace;boundary=frame")
     except:

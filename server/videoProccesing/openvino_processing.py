@@ -1,13 +1,28 @@
 import sys
 import math
 import random
-
+import requests as re
 import numpy as np
 from numpy import linalg as LA
 import cv2
 from scipy.spatial import distance
 from openvino.inference_engine import IECore, IENetwork
-
+def message(send):
+    try:
+     re.get('http://127.0.0.1:8000/mes/'+str(send))  
+     print(send)
+    except:
+        print('ошибка отправки')
+def vzglag(mas):
+    ygl = int(sum(mas)/len(mas))
+    if ygl > 0 and ygl <91:
+        message('right down')
+    elif ygl > 90 and ygl <181:
+         message('left down')
+    elif ygl <0 and ygl > -91:
+         message('right up')
+    else:
+        message('left up')
 class ImageOpenVINOPreprocessing():
     def __init__(self):
         self.model_det  = 'face-detection-adas-0001'
@@ -26,7 +41,7 @@ class ImageOpenVINOPreprocessing():
         self._W = 3
 
         self.boundary_box_flag = True
-
+ 
         # Prep for face detection
         self.ie = IECore()
 
@@ -64,7 +79,8 @@ class ImageOpenVINOPreprocessing():
         self.laser_flag = False
         self.flip_flag = True
         self.spark_flag = False
-
+        self.rez_eyes = []
+        self.frame_num = 0
     def line(self, p1, p2):
         A = (p1[1] - p2[1])
         B = (p2[0] - p1[0])
@@ -98,12 +114,14 @@ class ImageOpenVINOPreprocessing():
             img |= beam_img
 
     def draw_spark(self, img, coord):
-        for i in range(20):
+        if True:
             angle = random.random()*2*math.pi
             dia   = random.randrange(10,60)
             x = coord[0] + int(math.cos(angle)*dia - math.sin(angle)*dia)
             y = coord[1] + int(math.sin(angle)*dia + math.cos(angle)*dia)
-            cv2.line(img, coord, (x, y), (0, 255, 255), 2)
+            #cv2.line(img, coord, (x, y), (0, 255, 255), 2)
+           
+            cv2.circle(img,(x,y),10,(255,255,0),2)
 
     def usage(self):
         print("""
@@ -113,9 +131,15 @@ class ImageOpenVINOPreprocessing():
     's': Spark mode on/off
     'b': Boundary box on/off
     """)
-
+    def normir(self,x1,y1,x2,y2):
+     x2 = x2-x1
+     y2=y2-y1
+     x1 = 0
+     y1 = 0
+     ygl = math.atan2(y2,x2) *180 / math.pi
+     return ygl
     def main(self, img):
-
+        self.frame_num+=1
         if self.flip_flag == True:
             img = cv2.flip(img, 1)                                             # flip image
         out_img = img.copy()                                                   # out_img will be drawn and modified to make an display image
@@ -220,12 +244,26 @@ class ImageOpenVINOPreprocessing():
                         gaze_lines[g2][2] = True
 
         # Drawing gaze lines and sparks
+        
+        eyes = []
         for gaze_line in gaze_lines:
+            eyes.append(self.normir(gaze_line[0][0], gaze_line[0][1],gaze_line[1][0], gaze_line[1][1]))
             self.draw_gaze_line(out_img, (gaze_line[0][0], gaze_line[0][1]), (gaze_line[1][0], gaze_line[1][1]), self.laser_flag)
-            if gaze_line[2]==True:
-                self.draw_spark(out_img, (gaze_line[1][0], gaze_line[1][1]))
+            #if gaze_line[2]==True:
+            #self.draw_spark(out_img, (gaze_line[1][0], gaze_line[1][1]))
+        try:
+            self.rez_eyes.append(sum(eyes)/len(eyes))
+            if len(self.rez_eyes) > 10:
+                self.rez_eyes.remove(self.rez_eyes[0])
+            if self.frame_num % 45 == 0:
+                vzglag(self.rez_eyes)
 
+        except:
+            print("eyes does not found")
+        
         return out_img
+
+         
 """
 cam = cv2.VideoCapture(-1)
 camx, camy = [(1920, 1080), (1280, 720), (800, 600), (480, 480)][1]     # Set camera resolution [1]=1280,720
